@@ -1,18 +1,21 @@
-FROM php:7.4-fpm
+FROM php:8.0-fpm
 
 # Arguments defined in docker-compose.yml
 ARG user
 ARG uid
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y libicu-dev \
     git \
     curl \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
     zip \
-    unzip
+    zip \
+    unzip \
+   &&  docker-php-ext-configure intl \
+   && docker-php-ext-install intl
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*

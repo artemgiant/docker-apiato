@@ -1,0 +1,33 @@
+version: "3.7"
+services:
+  app:
+    build:
+      args:
+        user: sammy
+        uid: 1000
+        working_dir: ${APP_PATH_CONTANER}
+      context: ./
+      dockerfile: Dockerfile
+    image: ${APP_IMAGE_NAME}
+    container_name: ${APP_NAME}-app
+    restart: unless-stopped
+    working_dir: ${APP_PATH_CONTANER}
+    volumes:
+      - ${APP_PATH_HOST}:${APP_PATH_CONTANER}
+
+  nginx:
+    image: nginx:latest
+    container_name: ${APP_NAME}-nginx
+    ports:
+      - 3000:80
+    volumes:
+      - ${APP_PATH_HOST}:${APP_PATH_CONTANER}
+      - './docker/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf'
+
+  mysql:
+    image: mysql:8
+    restart: always
+    container_name: ${APP_NAME}-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+
